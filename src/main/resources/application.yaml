@@ -1,0 +1,21 @@
+spring:
+  application:
+    name: spring-security-jwt
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/spring-security-jwt-db
+    username: postgres
+    password: admin
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        format_sql: true
+    show-sql: true
+
+logging:
+  level:
+    org.hibernate.SQL: debug
+    org.hibernate.type.descriptor.sql: trace
