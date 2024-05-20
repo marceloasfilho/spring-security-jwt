@@ -8,6 +8,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import javax.crypto.SecretKey;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.Date;
 import java.util.Map;
 import java.util.function.Function;
@@ -39,16 +41,20 @@ public class JwtService {
         return Keys.hmacShaKeyFor(decode);
     }
 
-    private String generateToken(Map<String, Object> extraClaims, UserDetails userDetails) {
+    public String generateToken(Map<String, Object> extraClaims, UserDetails userDetails) {
         return Jwts.builder()
                 .claims()
                 .add(extraClaims)
                 .subject(userDetails.getUsername())
-                .issuedAt(new Date(System.currentTimeMillis()))
-                .expiration(new Date(System.currentTimeMillis() + 1000 * 60 + 24))
+                .issuedAt(Date.from(LocalDate.now().atStartOfDay(ZoneId.systemDefault()).toInstant()))
+                .expiration(Date.from(LocalDate.now().atStartOfDay(ZoneId.systemDefault()).plusDays(1).toInstant()))
                 .and()
-                .signWith(getSecretSigningKey())
+                .signWith(getSecretSigningKey(), Jwts.SIG.HS256)
                 .compact();
+    }
+
+    public String generateToken(UserDetails userDetails) {
+        return generateToken(Map.of(), userDetails);
     }
 
     public Boolean isTokenValid(String token, UserDetails userDetails) {
