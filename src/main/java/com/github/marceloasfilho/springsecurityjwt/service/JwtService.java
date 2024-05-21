@@ -57,12 +57,12 @@ public class JwtService {
         return generateToken(Map.of(), userDetails);
     }
 
-    public Boolean isTokenValid(String token, UserDetails userDetails) {
+    public boolean isTokenValid(String token, UserDetails userDetails) {
         final String username = this.extractUsername(token);
         return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
     }
 
-    private Boolean isTokenExpired(String token) {
+    private boolean isTokenExpired(String token) {
         return this.extractExpiration(token).before(new Date());
     }
 
